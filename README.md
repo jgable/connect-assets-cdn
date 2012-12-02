@@ -116,7 +116,6 @@ To create a Cake task to upload new assets, follow this example.
 ### TODO:
 
 * Better uploader tests
-* Check if files exist already on CDN before uploading
 
 ### Thanks
 
