@@ -34,11 +34,12 @@ A helper module for connect-assets to upload your files to a CDN (like Amazon S3
 
 ### TODO:
 
+* Better uploader tests
 * Check if files exist already on CDN before uploading
 
 ### Thanks
 
-Made possible thanks to [connect-assets](https://github.com/TrevorBurnham/connect-assets), [s3-client](https://github.com/superjoe30/node-s3-client), [knox](https://github.com/learnboost/knox).
+Made possible thanks to [connect-assets](https://github.com/TrevorBurnham/connect-assets), [knox](https://github.com/learnboost/knox).
     
 ### Copyright
 

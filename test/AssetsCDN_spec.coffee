@@ -18,6 +18,8 @@ describe "AssetsCDN", ->
 				'js/views/layout.js': [ '/js/views/layout-a94e07ae61c7c37bded4108b7fb1e9a5.js' ] 
 
 	fakeUploader = 
+		listExistingFiles: (prefix, done) ->
+			done null, []
 		uploadFile: (localPath, remotePath, done) ->
 			done null, remotePath
 

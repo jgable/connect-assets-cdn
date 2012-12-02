@@ -17,14 +17,20 @@ class AssetsCDN
 		@assets = assets.instance
 
 	upload: (done) ->
-		files = @_getAssetFiles()
+		@uploader.listExistingFiles @assets.options.buildDir, (err, existingFiles) =>
 
-		relPaths = (file.relative for file in files)
+			files = @_getAssetFiles()
 
-		onProgress = (file) =>
-			@log?("Asset Uploaded: #{file}")
+			relPaths = (file.relative for file in files when file.relative not in existingFiles)
 
-		@uploader.uploadFiles relPaths, onProgress, done
+			unless relPaths.length > 0
+				@log?("No new assets found")
+				return done null, relPaths
+
+			onProgress = (file) =>
+				@log?("Asset Uploaded: #{file}")
+
+			@uploader.uploadFiles relPaths, onProgress, done
 
 	_getAssetFiles: ->
 		# Getting builtAssets path from assets instance
