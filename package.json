@@ -1,6 +1,6 @@
 {
   "name": "connect-assets-cdn",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A connect-assets helper for uploading built assets to a CDN (like Amazon S3)",
   "main": "index.js",
   "directories": {
