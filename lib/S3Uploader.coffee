@@ -4,12 +4,6 @@ mime = require "mime"
 knox = require "knox"
 async = require "async"
 
-class UploadError extends Error
-
-	constructor: (msg, @response) ->
-		super
-
-
 class KnoxBase
 	constructor: (@key, @secret, @bucket) ->
 
@@ -38,8 +32,7 @@ class KnoxFileUploader extends KnoxBase
 			throw new Error "File does not exist: #{relPath}" unless exists
 
 			fs.readFile fullPath, (err, data) =>
-				content = data.toString()
-
+				
 				contentType = mime.lookup fullPath
 
 				# Add charset if it's known.
@@ -56,23 +49,18 @@ class KnoxFileUploader extends KnoxBase
 				oneYear = oneMonth * 12
 				
 				headers = 
-					"Content-Length": content.length
 					"Content-Type": contentType
 					'x-amz-acl': 'public-read'
 					"Cache-Control": "max-age=#{oneYear}"
 					"Expires": farExpires
 
 				client = @_createClient()
-				req = client.put remPath, headers
-
-				req.on "response", (res) ->
+				client.putBuffer data, remPath, headers, (err, res) ->
 					return done null, remPath if 200 == res.statusCode
 
-					err = new UploadError "Received non 200 response", res
+					err = new Error "Received non 200 response: #{res.statusCode}"
 
 					done err
-
-				req.end content
 
 
 class S3Uploader
