@@ -34,6 +34,14 @@ class AssetsCDN
 		# This lines kinda long;
 		# It returns the full path, relative path 
 		# and part of the assets cached references
-		({ full: "#{fullPre}#{builtFilePath}", relative: "#{buildPre}#{builtFilePath}", part: "#{builtFilePath}" } for own origFilePath, [builtFilePath] of @assets.cachedRoutePaths)
+		for own origFilePath, builtFile of @assets.cachedRoutePaths
+			if typeof builtFile == 'string' || builtFile instanceof String
+				# Handle cases where it's a string (css)
+				builtFilePath = builtFile
+			else
+				# Handle cases where it's an array (js)
+				[builtFilePath] = builtFile
+
+			{ full: "#{fullPre}#{builtFilePath}", relative: "#{buildPre}#{builtFilePath}", part: "#{builtFilePath}" } 
 
 module.exports = AssetsCDN
