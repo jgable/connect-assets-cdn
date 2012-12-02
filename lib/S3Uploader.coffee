@@ -26,6 +26,6 @@ class S3Uploader
 
 		uploads = (makeUpload path for path in paths)
 
-		async.parallel uploads, done
+		async.series uploads, done
 
 module.exports = S3Uploader
