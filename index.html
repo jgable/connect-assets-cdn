@@ -43,9 +43,93 @@
 
 <p><code>npm install connect-assets-cdn</code></p>
 
-<h3>Usage</h3>
+<h3>Usage (Cake Task)</h3>
 
-<pre><code>assets = require 'connect-assets'
+<p>To create a Cake task to upload new assets, follow this example.</p>
+
+<p><strong>/s3.js</strong></p>
+
+<pre><code>require("coffee-script");
+
+var uploader = require("./src/s3AssetUpload");
+
+uploader.upload(console.log, function(err, uploaded) {
+    if(err) {
+        return console.log("Error uploading: " + err.message);
+        process.exit(1);
+    }
+
+    console.log("Completed");
+    process.exit(0);
+});
+</code></pre>
+
+<p><strong>/src/s3AssetUpload.coffee</strong></p>
+
+<pre><code>express = require 'express'
+assets = require "connect-assets"
+jsPaths = require "connect-assets-jspaths"
+
+{AssetsCDN} = require "connect-assets-cdn"
+
+# Either create a config file like here or set this to 
+# an object with amazon key, secret and bucket values
+# Also should have the assetsRoot; e.g. //s3.amazonaws.com/myBucket
+config = require "./config"
+
+primeCSS = (assets) -&gt;
+    # We only have one file to pre-compile for css
+    # You might need to add more for your situation;
+    # whatever you reference in your views should be 
+    # referenced like this here
+    assets.instance.options.helperContext.css "prod"
+
+upload = (log, done) -&gt;
+
+    # Set up a fake express server so we can load connect-assets
+    app = express()
+
+    opts = 
+        # TODO: Set your assetsRoot
+        servePath: config.assetsRoot
+
+    app.use assets opts
+
+    # Prime the CSS files
+    primeCSS assets
+    # Prime the JS files
+    jsPaths assets
+
+    # TODO: Set these from your config
+    {key, secret, bucket} = config.amazon
+
+    # Create our cdn manager and upload
+    cdn = new AssetsCDN {assets, key, secret, bucket, log}
+
+    cdn.upload done
+
+module.exports = {upload}
+</code></pre>
+
+<p><strong>/Cakefile</strong> </p>
+
+<pre><code>task 's3', 'Upload builtAssets', -&gt;
+    # Set production NODE_ENV
+    currentEnv = process.env
+    currentEnv.NODE_ENV = "production"
+
+    server = spawn 'node', ['s3.js'],
+      env: currentEnv
+
+    server.stdout.pipe process.stdout
+    server.stderr.pipe process.stderr
+</code></pre>
+
+<h3>Usage (Before Starting Server)</h3>
+
+<pre><code># You can also upload new assets before starting the server...
+
+assets = require 'connect-assets'
 {AssetsCDN} = require 'connect-assets-cdn'
 
 # Snip ...
@@ -72,10 +156,10 @@ if process.env.NODE_ENV == "production"
 <h3>TODO:</h3>
 
 <ul>
-<li>Check if files exist already on CDN before uploading</li>
+<li>Better uploader tests</li>
 </ul><h3>Thanks</h3>
 
-<p>Made possible thanks to <a href="https://github.com/TrevorBurnham/connect-assets">connect-assets</a>, <a href="https://github.com/superjoe30/node-s3-client">s3-client</a>, <a href="https://github.com/learnboost/knox">knox</a>.</p>
+<p>Made possible thanks to <a href="https://github.com/TrevorBurnham/connect-assets">connect-assets</a>, <a href="https://github.com/learnboost/knox">knox</a>.</p>
 
 <h3>Copyright</h3>
 
