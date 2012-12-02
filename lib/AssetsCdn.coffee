@@ -1,4 +1,6 @@
 
+S3Uploader = require "./S3Uploader"
+
 class AssetsCDN
 	constructor: (opts) ->
 		{assets, @uploader, @log} = opts
