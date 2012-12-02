@@ -1,4 +1,4 @@
-connect-assets-cdn
+connect-assets-cdn [![Build Status](https://secure.travis-ci.org/jgable/connect-assets-cdn.png)](http://travis-ci.org/jgable/connect-assets-cdn)
 ==================
 
 A helper module for connect-assets to upload your files to a CDN (like Amazon S3)

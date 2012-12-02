@@ -40,16 +40,6 @@ describe "AssetsCDN", ->
 
 		toThrow.should.throw "Must provide uploader, or key, secret and bucket in options"
 
-	it "throws an error if assets is not built", ->
-		nonBuiltAssets = 
-			instance:
-				options:
-					built: false
-					buildDir: ""
-
-		toThrow = ->
-			cdn = new AssetsCDN {}
-
 	it "can load file names from connect-assets instance", ->
 		files = cdn._getAssetFiles()
 
