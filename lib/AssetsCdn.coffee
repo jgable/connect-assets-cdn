@@ -18,6 +18,7 @@ class AssetsCDN
 
 	upload: (done) ->
 		@uploader.listExistingFiles @assets.options.buildDir, (err, existingFiles) =>
+			return done(err) if err
 
 			files = @_getAssetFiles()
 
