@@ -74,6 +74,16 @@ describe "AssetsCDN", ->
 
 			done()
 
+	it "calls callback with error if error received from Uploader", ->
+		cdn.uploader = 
+			listExistingFiles: (prefix, done) ->
+				done new Error('some amazon S3 error')
+			uploadFile: (localPath, remotePath, done) ->
+				done new Error('some amazon S3 error')
+
+		cdn.upload (err, uploadedPaths) ->
+			should.exist err
+
 	###
 	# This requires you to set up some test files and set the key/secret
 	# I'd probably create a test/builtAssets directory with some files,
